@@ -3,40 +3,50 @@ package operate
 import (
 	"strconv"
 	"strings"
-	"sync"
 )
 
 const (
 	_              int = iota
 	LogicPriority1     // 逻辑运算1 or
 	LogicPriority2     // 逻辑运算2 and
-	LogicPriority3     // 逻辑运算3 > < >= <= !
+	LogicPriority3     // 逻辑运算3 > < >= <=
+	LogicPriority4     // 逻辑运算4 !
 	Arithmetic1        // 四则运算1 + -
 	Arithmetic2        // 四则运算2 * / %
 )
 
-var globalOperateMap = map[string]IOperate{}
+var globalOperateList []IOperate
 
-type IOperate interface {
-	GetOperateSymbol() []string                         // operate symbol
-	Execute(v1 interface{}, v2 interface{}) interface{} // execute func
-	GetPriority() int
-	GetRegexMatch() string //string parse by regex
+func init() {
+	Register(
+		AddOperate{},
+		subOperate{},
+		MultiOperate{},
+		divOperate{},
+		AndOperate{},
+		orOperate{},
+		LogicOperate{},
+		LogicNotOperate{},
+	)
 }
 
-var lock sync.RWMutex
+type IOperate interface {
+	GetOperateSymbol() []string                                    // operate symbol
+	Execute(op string, v1 interface{}, v2 interface{}) interface{} // execute func
+	GetPriority() int
+	GetRegexMatch() string //string parse by regex
+	GetOperateNumber() int // 运算符数
+}
 
 //Register operate
-func Register(name string, operate IOperate) {
-	lock.Lock()
-	defer lock.Unlock()
-	globalOperateMap[name] = operate
+func Register(operate ...IOperate) {
+	globalOperateList = append(globalOperateList, operate...)
 }
 
 //GetOperate
 //todo reflect
 func GetOperate(symbol string) IOperate {
-	for _, iOperate := range globalOperateMap {
+	for _, iOperate := range globalOperateList {
 		for _, v := range iOperate.GetOperateSymbol() {
 			if v == strings.ToLower(symbol) {
 				return iOperate
@@ -47,40 +57,18 @@ func GetOperate(symbol string) IOperate {
 }
 
 func GetAllOperate() (operateList []IOperate) {
-	for _, operate := range globalOperateMap {
+	for _, operate := range globalOperateList {
 		operateList = append(operateList, operate)
 	}
 	return
 }
 
-var _ IOperate = baseOperate{}
-
 type baseOperate struct {
-	name       string
-	execute    func(v1, v2 interface{}) interface{}
-	symbol     []string
-	regexMatch string
-	priority   int
 }
 
-func (b baseOperate) GetOperateSymbol() []string {
-	return b.symbol
-}
-
-func (b baseOperate) GetRegexMatch() string {
-	return b.regexMatch
-}
-
-func (b baseOperate) Execute(v1 interface{}, v2 interface{}) interface{} {
-	return b.execute(v1, v2)
-}
-
-func (b baseOperate) GetOperate() []string {
-	return b.symbol
-}
-
-func (b baseOperate) GetPriority() int {
-	return b.priority
+func (b baseOperate) GetOperateNumber() int {
+	// 默认都是双目运算符
+	return 2
 }
 
 // todo reflect
@@ -96,11 +84,11 @@ func ensureFloat64(s interface{}) float64 {
 	case float64:
 		return s.(float64)
 	case int:
-		i := strconv.Itoa(s.(int))
-		return ensureFloat64(i)
+		return float64(s.(int))
 	case int32:
-		i := strconv.Itoa(int(s.(int32)))
-		return ensureFloat64(i)
+		return float64(s.(int32))
+	case int64:
+		return float64(s.(int64))
 	}
 	panic("value format err")
 }

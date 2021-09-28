@@ -1,18 +1,21 @@
 package operate
 
-type sub struct {
+type subOperate struct {
 	baseOperate
 }
 
-func init() {
-	s := sub{}
-	s.name = "sub"
-	s.symbol = []string{"-", "sub"}
-	s.regexMatch = "\\-|(?i:sub)"
-	s.priority = Arithmetic1
-	s.execute = func(v1, v2 interface{}) interface{} {
-		return ensureFloat64(v1) - ensureFloat64(v2)
-	}
+func (s subOperate) GetOperateSymbol() []string {
+	return []string{"-", "sub"}
+}
 
-	Register(s.name, s)
+func (s subOperate) Execute(op string, v1 interface{}, v2 interface{}) interface{} {
+	return ensureFloat64(v1) - ensureFloat64(v2)
+}
+
+func (s subOperate) GetPriority() int {
+	return Arithmetic1
+}
+
+func (s subOperate) GetRegexMatch() string {
+	return "\\-|(?i:sub)"
 }

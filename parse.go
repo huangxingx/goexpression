@@ -44,6 +44,16 @@ func parse2mpn(express string) []string {
 	return compile.FindAllString(express, -1)
 }
 
+//func parse2mpn(expression string) []string {
+//	result := make([]string, 0)
+//	s := scanner.Scanner{}
+//	s.Init(strings.NewReader(expression))
+//	for tok := s.Scan(); tok != scanner.EOF; tok = s.Scan() {
+//		result = append(result, s.TokenText())
+//	}
+//	return result
+//}
+
 func parseSuffixExpress(expressList []string) []string {
 	suffixExpressList := make([]string, 0, len(expressList))
 	stack := NewStack()

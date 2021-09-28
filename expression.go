@@ -7,21 +7,25 @@ import (
 	"github.com/huangxingx/goexpression/operate"
 )
 
-type Express struct {
-	inputExpress string
+type Expression struct {
+	inputExpression      string   // 表达式字符串
+	suffixExpressionList []string // 后缀表达式
 }
 
-func NewExpress(express string) *Express {
-	return &Express{
-		inputExpress: express,
+func NewExpress(expression string) *Expression {
+	mpn := parse2mpn(expression)
+	suffixExpress := parseSuffixExpress(mpn)
+
+	return &Expression{
+		inputExpression:      expression,
+		suffixExpressionList: suffixExpress,
 	}
 }
 
-func (e *Express) Execute(param map[string]interface{}) interface{} {
-	mpn := parse2mpn(e.inputExpress)
-	suffixExpress := parseSuffixExpress(mpn)
+func (e *Expression) Execute(param map[string]interface{}) interface{} {
 	stack := NewStack()
-	for _, v := range suffixExpress {
+	var tmpResult interface{}
+	for _, v := range e.suffixExpressionList {
 		// number or keywork
 		if IsNum(v) || isKeyWork(v) {
 			stack.Push(v)
@@ -38,31 +42,26 @@ func (e *Express) Execute(param map[string]interface{}) interface{} {
 			stack.Push(value)
 			continue
 		}
-		v2 := stack.Pop()
-		v1 := stack.Pop()
+		// 单目运算符
+		number := iOperate.GetOperateNumber()
+		if number == 1 {
+			oneValue := stack.Pop()
+			tmpResult = iOperate.Execute(v, oneValue, nil)
+		} else {
+			v2 := stack.Pop()
+			v1 := stack.Pop()
+			tmpResult = iOperate.Execute(v, v1, v2)
+		}
 
-		result := iOperate.Execute(v1, v2)
-		stack.Push(result)
+		stack.Push(tmpResult)
 	}
 	result := stack.Pop()
 	if !stack.IsEmpty() {
 		stack.Print()
 		panic(fmt.Sprintf("execute err: stack.len > 0"))
 	}
-	// todo string -> float64
-	switch result.(type) {
-	case string:
-		floatValue, err := strconv.ParseFloat(result.(string), 64)
-		if err != nil {
-			panic(err)
-		}
-		return floatValue
-	case float64:
-		return result.(float64)
-	case bool:
-		return result.(bool)
-	}
-	panic("value format err")
+
+	return result
 }
 
 func IsNum(s string) bool {

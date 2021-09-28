@@ -45,6 +45,13 @@ func TestExpressExecute(t *testing.T) {
 		// keywork
 		{name: "test_keywork_upper", args: args{express: "f or (1 AND TRUE)"}, want: true},
 
+		// logic
+		{name: "test_logic_gt", args: args{express: "2 > 1 and 3> 2"}, want: true},
+		{name: "test_logic_ge_true", args: args{express: "2 >= 1 and 2>= 2"}, want: true},
+		{name: "test_logic_ge_false", args: args{express: "2 <= 1 and 2>= 2"}, want: false},
+		{name: "test_logic_not_true", args: args{express: "!0 and 2>= 2"}, want: true},
+		{name: "test_logic_not_false", args: args{express: "!1 and 2>= 2"}, want: false},
+
 		// --- 参数测试
 		// param
 		{name: "test_param_1", args: args{express: "a + 1", param: map[string]interface{}{"a": 1}}, want: 2.0},
@@ -56,5 +63,19 @@ func TestExpressExecute(t *testing.T) {
 				t.Errorf("NewExpress().Execute(nil) = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func BenchmarkAdd(b *testing.B) {
+	express := NewExpress("1+1+2")
+	for i := 0; i < b.N; i++ {
+		express.Execute(nil)
+	}
+}
+
+func BenchmarkDiv(b *testing.B) {
+	express := NewExpress("10/5/2")
+	for i := 0; i < b.N; i++ {
+		express.Execute(nil)
 	}
 }
