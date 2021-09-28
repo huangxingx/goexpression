@@ -1,6 +1,10 @@
-### golang 实现的表达式计算
+## golang 实现的表达式计算
 
-## 功能清单
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/huangxingx/goexpression/Go)
+![Codecov](https://img.shields.io/codecov/c/github/huangxingx/goexpression)
+![GitHub](https://img.shields.io/github/license/huangxingx/goexpression)
+
+### 功能清单
 
 1. [x] 四则运算 +-*/ 实现；
 2. [x] 逻辑运算 and or && || 实现；
@@ -8,7 +12,7 @@
 4. [x] 逻辑运算符 > >= < <= ! 实现；
 5. [ ] 自定义方法注入；
 
-## TODO
+### TODO
 
 1. 优雅的错误返回；
 2. 自定义方法注入；
