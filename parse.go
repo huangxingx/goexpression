@@ -54,13 +54,13 @@ func parse2mpn(express string) []string {
 //	return result
 //}
 
-func parseSuffixExpress(expressList []string) []string {
-	suffixExpressList := make([]string, 0, len(expressList))
-	stack := NewStack()
-	for _, v := range expressList {
+func parseSuffixExpression(expressionList []string) []string {
+	suffixExpressionList := make([]string, 0, len(expressionList))
+	stack := NewStack() // lower priority operate stack
+	for _, v := range expressionList {
 		// 字面量
 		if IsNum(v) {
-			suffixExpressList = append(suffixExpressList, v)
+			suffixExpressionList = append(suffixExpressionList, v)
 			continue
 		}
 		// v is op or var
@@ -69,13 +69,13 @@ func parseSuffixExpress(expressList []string) []string {
 			stack.Push(v)
 		case ")":
 			for stack.Peek() != "(" {
-				suffixExpressList = append(suffixExpressList, stack.Pop().(string))
+				suffixExpressionList = append(suffixExpressionList, stack.Pop().(string))
 			}
 			stack.Pop() // 移除 (
 		default:
 			// keyword
 			if isKeyWork(v) {
-				suffixExpressList = append(suffixExpressList, v)
+				suffixExpressionList = append(suffixExpressionList, v)
 				continue
 			}
 
@@ -85,7 +85,7 @@ func parseSuffixExpress(expressList []string) []string {
 			if currentOperate == nil {
 				//panic(fmt.Sprintf("不支持操作符: %s", currentOperate))
 				// v is var
-				suffixExpressList = append(suffixExpressList, v)
+				suffixExpressionList = append(suffixExpressionList, v)
 				break
 			}
 
@@ -106,13 +106,13 @@ func parseSuffixExpress(expressList []string) []string {
 				break
 			} else {
 				item := stack.Pop().(string)
-				suffixExpressList = append(suffixExpressList, item)
+				suffixExpressionList = append(suffixExpressionList, item)
 				goto cc
 			}
 		}
 	}
 	for !stack.IsEmpty() {
-		suffixExpressList = append(suffixExpressList, stack.Pop().(string))
+		suffixExpressionList = append(suffixExpressionList, stack.Pop().(string))
 	}
-	return suffixExpressList
+	return suffixExpressionList
 }

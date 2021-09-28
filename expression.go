@@ -7,14 +7,22 @@ import (
 	"github.com/huangxingx/goexpression/operate"
 )
 
+//Expression ...
 type Expression struct {
 	inputExpression      string   // 表达式字符串
 	suffixExpressionList []string // 后缀表达式
 }
 
+// NewExpress
+// usage:
+//	expressStr := "1+2+3"
+//	exp := goexpression.NewExpress(expressStr)
+//	result := exp.Execute(nil)
+//	fmt.Printf("%s = %.2f", expressStr, result.(float64))
+// // 6.00
 func NewExpress(expression string) *Expression {
 	mpn := parse2mpn(expression)
-	suffixExpress := parseSuffixExpress(mpn)
+	suffixExpress := parseSuffixExpression(mpn)
 
 	return &Expression{
 		inputExpression:      expression,
@@ -22,6 +30,8 @@ func NewExpress(expression string) *Expression {
 	}
 }
 
+//Execute
+// param map[string]interface{} 参数
 func (e *Expression) Execute(param map[string]interface{}) interface{} {
 	stack := NewStack()
 	var tmpResult interface{}

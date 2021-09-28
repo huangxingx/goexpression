@@ -13,6 +13,12 @@
 1. 优雅的错误返回；
 2. 自定义方法注入；
 
+### 使用
+
+```bash
+go get -u github.com/huangxingx/goexpression
+```
+
 `cat example.go`
 
 ```go
@@ -42,11 +48,15 @@ Process finished with the exit code 0
 **文件树**
 
 ```shell
-➜  go-utils (main) ✗ tree express              
-express
+➜  goexpression (main) ✗ tree                              
+.
+├── LICENSE
 ├── README.md
-├── express.go
-├── express_test.go
+├── example
+│   └── example.go
+├── expression.go
+├── expression_test.go
+├── go.mod
 ├── operate
 │   ├── add_operate.go
 │   ├── and_operate.go
@@ -57,5 +67,29 @@ express
 │   ├── or_operate.go
 │   └── sub_operate.go
 ├── parse.go
-└── parse_test.go
+├── parse_test.go
+└── stack.go
+```
+
+`go test .`<p>
+
+```shell
+➜  goexpression (main) ✗ go test .       
+ok      github.com/huangxingx/goexpression      0.167s
+
+```
+
+`go test -bench .`
+
+```shell
+➜  goexpression (main) ✗ go test -bench .
+goos: darwin
+goarch: amd64
+pkg: github.com/huangxingx/goexpression
+cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
+BenchmarkAdd-12          1364682               864.0 ns/op
+BenchmarkDiv-12           975276              1144 ns/op
+PASS
+ok      github.com/huangxingx/goexpression      3.555s
+
 ```

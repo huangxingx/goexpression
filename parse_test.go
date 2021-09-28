@@ -47,8 +47,8 @@ func Test_parseSuffixExpress(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parseSuffixExpress(tt.args.expressList); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parseSuffixExpress() = %v, want %v", got, tt.want)
+			if got := parseSuffixExpression(tt.args.expressList); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("parseSuffixExpression() = %v, want %v", got, tt.want)
 			}
 		})
 	}

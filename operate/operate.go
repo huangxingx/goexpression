@@ -19,10 +19,12 @@ var globalOperateList []IOperate
 
 func init() {
 	Register(
+		// 四则运算
 		AddOperate{},
 		subOperate{},
 		MultiOperate{},
 		divOperate{},
+		// logic
 		AndOperate{},
 		orOperate{},
 		LogicOperate{},
