@@ -1,7 +1,7 @@
 ## golang 实现的表达式计算
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/huangxingx/goexpression/Go)
-![Codecov](https://img.shields.io/codecov/c/github/huangxingx/goexpression)
+[![codecov](https://codecov.io/gh/huangxingx/goexpression/branch/main/graph/badge.svg?token=DC93QOMBD1)](https://codecov.io/gh/huangxingx/goexpression)
 ![GitHub](https://img.shields.io/github/license/huangxingx/goexpression)
 
 ### 功能清单
