@@ -1,4 +1,4 @@
-name: Go
+name: Go Build Test Coverage
 
 on:
   push:
@@ -7,8 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-
-  build:
+  Build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,10 +20,11 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-
+  Test:
     - name: Test With Coverage
       run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
 
+  Coverage:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
 
